@@ -92,3 +92,42 @@ export async function countLeadsByStatus() {
   for (const row of rows) base[row.status] = row.count;
   return base;
 }
+
+
+// ---------- DASHBOARD STATS + RECENT LEADS ----------
+export async function getDashboardData() {
+  // 1. Get counts by status
+  const countsQuery = pool.query(
+    `SELECT status, COUNT(*)::int AS count FROM leads GROUP BY status`
+  );
+
+  // 2. Get the 5 most recent leads
+  const recentQuery = pool.query(
+    `SELECT 
+       id, name, company, status, 
+       created_at AS "createdAt" 
+     FROM leads 
+     ORDER BY created_at DESC 
+     LIMIT 5`
+  );
+
+  // Run both queries in parallel for speed
+  const [countsResult, recentResult] = await Promise.all([countsQuery, recentQuery]);
+
+  // Format the counts to always include all 4 statuses
+  const stats = { New: 0, Contacted: 0, Qualified: 0, Lost: 0 };
+  let total = 0;
+  
+  for (const row of countsResult.rows) {
+    stats[row.status] = row.count;
+    total += row.count;
+  }
+
+  return {
+    stats: {
+      total,
+      ...stats
+    },
+    recentLeads: recentResult.rows
+  };
+}

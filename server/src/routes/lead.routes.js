@@ -6,6 +6,7 @@ import {
   getStatusCounts,
   listLeads,
   updateLead,
+  getDashboard
 } from "../controller/lead.controller.js";
 import { validateLead } from "../middleware/validateLead.js";
 
@@ -22,5 +23,7 @@ leadRouter.put("/update-lead/:id", validateLead, updateLead);
 leadRouter.delete("/delete-lead/:id", deleteLead);
 
 leadRouter.get("/status-counts", getStatusCounts);
+
+leadRouter.get('/dashboard',getDashboard)
 
 export default leadRouter;

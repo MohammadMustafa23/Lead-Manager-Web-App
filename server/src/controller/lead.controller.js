@@ -5,6 +5,7 @@ import {
   updateLeadById,
   deleteLeadById,
   countLeadsByStatus,
+  getDashboardData
 } from "../Db_query/lead.queries.js";
 
 const LEAD_STATUSES = ["new", "contacted", "qualified", "converted", "lost"];
@@ -127,5 +128,15 @@ export async function getStatusCounts(req, res) {
     return res.status(200).json(counts);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+}
+
+// Dashboard
+export async function getDashboard(req, res, next) {
+  try {
+    const data = await getDashboardData();
+    res.json(data);
+  } catch (err) {
+    next(err);
   }
 }
