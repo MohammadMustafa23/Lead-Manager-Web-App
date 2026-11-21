@@ -1,11 +1,17 @@
-function App() {
+import { Navigate, Route, Routes } from "react-router-dom";
+import AppLayout from "./components/AppLayout";
+import DashboardPage from "./pages/DashboardPage";
+import LeadsPage from "./pages/LeadsPage";
+
+export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950">
-      <h1 className="text-4xl font-bold text-white">
-        Tailwind CSS Working!
-      </h1>
-    </div>
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/leads" element={<LeadsPage />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
   );
 }
-
-export default App;
