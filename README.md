@@ -132,7 +132,7 @@ ORIGIN_ALLOW=http://localhost:5173
 `client/lead-managment/.env`
  
 ```env
-VITE_API_URL=http://localhost:3000/api
+API_URL=http://localhost:3000/api
 ```
  
 > Secrets are never committed. Copy `.env.example` and fill in your own values.
