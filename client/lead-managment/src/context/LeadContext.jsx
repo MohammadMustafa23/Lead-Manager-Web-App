@@ -6,6 +6,7 @@ import {
   updateLead as updateLeadApi,
   deleteLead as deleteLeadApi,
 } from "../services/lead.service";
+import { toast } from "sonner";
 
 const LeadContext = createContext(null);
 
@@ -30,27 +31,48 @@ export function LeadProvider({ children }) {
   }, []);
 
   async function addLead(leadData) {
-    const newLead = await createLeadApi(leadData);
+    try {
+      const newLead = await createLeadApi(leadData);
+      setLeads((current) => [newLead, ...current]);
+      toast.success("Lead created successfully!");
 
-    setLeads((current) => [newLead, ...current]);
-
-    return newLead;
+      return newLead;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to create lead");
+      throw error;
+    }
   }
 
   async function updateLead(id, leadData) {
-    const updatedLead = await updateLeadApi(id, leadData);
+    try {
+      const updatedLead = await updateLeadApi(id, leadData);
 
-    setLeads((current) =>
-      current.map((lead) => (lead.id === id ? updatedLead : lead)),
-    );
+      setLeads((current) =>
+        current.map((lead) => (lead.id === id ? updatedLead : lead)),
+      );
 
-    return updatedLead;
+      toast.success("Lead updated successfully!");
+
+      return updatedLead;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update lead");
+
+      throw error;
+    }
   }
 
   async function deleteLead(id) {
-    await deleteLeadApi(id);
+    try {
+      await deleteLeadApi(id);
 
-    setLeads((current) => current.filter((lead) => lead.id !== id));
+      setLeads((current) => current.filter((lead) => lead.id !== id));
+
+      toast.success("Lead deleted successfully!");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete lead");
+
+      throw error;
+    }
   }
 
   return (
